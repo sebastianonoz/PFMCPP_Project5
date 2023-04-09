@@ -115,6 +115,7 @@ struct Guitar
         void bend(std::string whichString, bool bendUp);
         void slide(std::string currentNote, std::string targetNote);
         bool snap();
+        void displayCurrentPitchST();
     };
 
     Guitar();
@@ -123,7 +124,8 @@ struct Guitar
     bool playNote(std::string whichNote);
     void tune(float CurrentCent);
     bool makePercussiveNoise();
-    void increaseVolume(int targetVolume);
+    void increaseVolume(int targetVolume);   
+    void displayVolumeLevel();
     
 };
 
@@ -179,6 +181,11 @@ bool Guitar::Strings::snap()
     return true;
 }
 
+void Guitar::Strings::displayCurrentPitchST()
+{
+    std::cout << "Current pitch ST: " << this->currentPitchST << std::endl;
+}
+
 bool Guitar::playNote(std::string whichNote)
 {
     if(whichNote == "F")
@@ -222,6 +229,11 @@ void Guitar::increaseVolume(int targetVolume)
     }
 }
 
+void Guitar::displayVolumeLevel()
+{
+    std::cout << "Current volume level is: " << this->volumeLevel << std::endl;
+}
+
 // Copied UDT 2
 
 struct Engines 
@@ -252,6 +264,7 @@ struct Engines
         void increaseSpeed(int targetSpeed);
         void increasePressure(int targetPressure);
         void releaseFuel(int amount);
+        void displayMaterial();
     };
 
     Engines();
@@ -260,6 +273,7 @@ struct Engines
     bool engageThrust(Turbines thrust,bool turbinesEngaged);
     void increasePower(int amountOfIncrease);
     void controlSpeed();
+    void displaySize();
 };
 
 Engines::Engines() :
@@ -311,6 +325,11 @@ void Engines::Turbines::increasePressure(int targetPressure)
     }
 }
 
+void Engines::Turbines::displayMaterial()
+{
+    std::cout << "The material of the turbines is: " << this->material << std::endl;
+}
+
 void Engines::Turbines::releaseFuel(int amount)
 {
     while (fuelReleased < amount)
@@ -348,6 +367,11 @@ void Engines::controlSpeed()
     }
 }
 
+void Engines::displaySize()
+{
+    std::cout << "Size of engines: " << this->size << std::endl;
+}
+
 // Copied UDT 3
 struct Fuselage
 {
@@ -362,6 +386,7 @@ struct Fuselage
     void supportWingsAndTail();
     void maintainInternalPressure();
     void receivePassengers(int passengerCount);
+    void displayCapacity();
 };
 
 Fuselage::Fuselage() :
@@ -412,6 +437,11 @@ void Fuselage::receivePassengers(int passengerCount)
             std::cout << "Fuselage is at full capacity. Cannot board any more passengers." << std::endl;
         }
     }
+}
+
+void Fuselage::displayCapacity()
+{
+    std::cout << "The fuselage can hold up to " << this->capacity << " passengers" << std::endl;
 }
 
 // New UDT 4
@@ -496,25 +526,36 @@ int main()
     gib.tune(.04f);
     gib.makePercussiveNoise();
     gib.increaseVolume(50);
+    gib.displayVolumeLevel();
     eball.bend("Low E", false);
     eball.slide("A", "G");
     eball.snap();
+    eball.displayCurrentPitchST();
+    
+    std::cout << "Current pitch ST: " << eball.currentPitchST << std::endl;
+    std::cout << "Current volume level is: " << gib.volumeLevel << std::endl;
 
     Engines engines;
     Engines::Turbines turbines;
     engines.engageThrust(turbines, true);
     engines.increasePower(40);
     engines.controlSpeed();
+    engines.displaySize();
     turbines.increaseThrustLevel(20);
     turbines.increaseSpeed(20);
     turbines.increasePressure(40);
     turbines.releaseFuel(10);
+    turbines.displayMaterial();
+    std::cout << "Size of engines: " << engines.size << std::endl;
+    std::cout << "The material of the turbines is: " << turbines.material << std::endl;
 
     Fuselage fuselage;
     fuselage.encloseCabin();
     fuselage.supportWingsAndTail();
     fuselage.maintainInternalPressure();
     fuselage.receivePassengers(10);
+    fuselage.displayCapacity();
+    std::cout << "The fuselage can hold up to " << fuselage.capacity << " passengers" << std::endl;
 
     GuitarCollector gc;
     gc.raiseMultipleVolumes();
@@ -523,7 +564,6 @@ int main()
     CoreOfPlane cop;
     cop.adjustPressures();
     cop.startUp();
-    
-    
+     
     std::cout << "good to go!" << std::endl;
 }
