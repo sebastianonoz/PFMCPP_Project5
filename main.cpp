@@ -20,8 +20,8 @@ Create a branch named Part3
     This means if you had something like the following in your main() previously: 
 */
 #if false
- Axe axe;
- std::cout << "axe sharpness: " << axe.sharpness << "\n";
+    Axe axe;
+    std::cout << "axe sharpness: " << axe.sharpness << "\n";
  #endif
  /*
     you would update that to use your wrappers:
@@ -29,8 +29,8 @@ Create a branch named Part3
  */
 
 #if false
-AxeWrapper axWrapper( new Axe() );
-std::cout << "axe sharpness: " << axWrapper.axPtr->sharpness << "\n";
+    AxeWrapper axWrapper( new Axe() );
+    std::cout << "axe sharpness: " << axWrapper.axPtr->sharpness << "\n";
 #endif
 /*
 notice that the object name has changed from 'axe' to 'axWrapper'
@@ -44,13 +44,13 @@ You don't have to do this, you can keep your current object name and just change
 7) If you were using any UDTs as function arguments like this:
 */
 #if false
-void someMemberFunction(Axe axe);
+    void someMemberFunction(Axe axe);
 #endif
 /*
   Pass those arguments by Reference now that you know what references are (Project 6 Part 2).
-*/
+  */
 #if false
-void someMemberFunction(Axe& axe);
+    void someMemberFunction(Axe& axe);
 #endif
 /*
 If you aren't modifying the passed-in object inside the function, pass by 'const reference'.
@@ -62,10 +62,10 @@ Mark every member function that is not modifying any member variables as 'const'
 */
 #if false
 //a function where the argument is passed by const-ref
-void someMemberFunction(const Axe& axe);
+    void someMemberFunction(const Axe& axe);
 
 //a member function that is marked const, meaning it will not modify any member variables of the 'Axe' class.
-void Axe::aConstMemberFunction() const { }
+    void Axe::aConstMemberFunction() const { }
 #endif
 /*
  8) After you finish, click the [run] button.  Clear up any errors or warnings as best you can.
@@ -93,6 +93,7 @@ void Axe::aConstMemberFunction() const { }
  Wait for my code review.
  */
 #include <iostream>
+#include "LeakedObjectDetector.h"
 // Copied UDT #1
 
 struct Guitar
@@ -125,11 +126,14 @@ struct Guitar
     Guitar();
     ~Guitar();
 
+    Strings stringsObj;
     bool playNote(std::string whichNote);
     void tune(float CurrentCent);
     bool makePercussiveNoise();
     void increaseVolume(int targetVolume);   
     void displayVolumeLevel();
+
+    JUCE_LEAK_DETECTOR(Guitar)
     
 };
 
@@ -238,6 +242,25 @@ void Guitar::displayVolumeLevel()
     std::cout << "Current volume level is: " << this->volumeLevel << std::endl;
 }
 
+
+struct GuitarWrapper
+{
+    Guitar* gtrPtr = nullptr;
+    GuitarWrapper( Guitar* ptrToGuitar ) : gtrPtr(ptrToGuitar)
+    {
+        std::cout << "GuitarWrapper being constructed" << std::endl;
+    }
+    ~GuitarWrapper()
+    {
+        delete gtrPtr;
+        std::cout << "GuitarWrapper being deconstructed (deleted gtrPtr)" << std::endl;
+    }
+};
+
+
+
+
+
 // Copied UDT 2
 
 struct Engines 
@@ -274,10 +297,15 @@ struct Engines
     Engines();
     ~Engines();
 
-    bool engageThrust(Turbines thrust,bool turbinesEngaged);
+    Turbines turbines;
+
+    bool engageThrust(Turbines& thrust,bool turbinesEngaged);
     void increasePower(int amountOfIncrease);
     void controlSpeed();
     void displaySize();
+
+    JUCE_LEAK_DETECTOR(Engines)
+
 };
 
 Engines::Engines() :
@@ -343,7 +371,7 @@ void Engines::Turbines::releaseFuel(int amount)
     }
 }
 
-bool Engines::engageThrust(Turbines thrust, bool turbinesEngaged)
+bool Engines::engageThrust(Turbines& thrust, bool turbinesEngaged)
 {
     if(turbinesEngaged == true)
     {
@@ -376,6 +404,23 @@ void Engines::displaySize()
     std::cout << "Size of engines: " << this->size << std::endl;
 }
 
+
+struct EnginesWrapper
+{
+    Engines* egPtr = nullptr;
+    EnginesWrapper( Engines* ptrToEngines ) : egPtr(ptrToEngines)
+    {
+        std::cout << "EnginesWrapper being constructed" << std::endl;
+    }
+    ~EnginesWrapper()
+    {
+        delete egPtr;
+        std::cout << "EnginesWrapper being deconstructed (deleted egPtr)" << std::endl;
+    }
+};
+
+
+
 // Copied UDT 3
 struct Fuselage
 {
@@ -391,6 +436,8 @@ struct Fuselage
     void maintainInternalPressure();
     void receivePassengers(int passengerCount);
     void displayCapacity();
+
+    JUCE_LEAK_DETECTOR(Fuselage)
 };
 
 Fuselage::Fuselage() :
@@ -448,6 +495,20 @@ void Fuselage::displayCapacity()
     std::cout << "The fuselage can hold up to " << this->capacity << " passengers" << std::endl;
 }
 
+struct FuselageWrapper
+{
+    Fuselage* fusPtr = nullptr;
+    FuselageWrapper( Fuselage* ptrToFuselage ) : fusPtr(ptrToFuselage)
+    {
+        std::cout << "FuselageWrapper being constructed" << std::endl;
+    }
+    ~FuselageWrapper()
+    {
+        delete fusPtr;
+        std::cout << "FuselageWrapper being deconstructed (deleted fusPtr)" << std::endl;
+    }
+};
+
 // New UDT 4
 
 struct GuitarCollector
@@ -459,6 +520,8 @@ struct GuitarCollector
     void tuneAll();
     GuitarCollector();
     ~GuitarCollector();
+
+    JUCE_LEAK_DETECTOR(GuitarCollector)
 };
 
 GuitarCollector::GuitarCollector()
@@ -483,6 +546,21 @@ void GuitarCollector::tuneAll()
     lp.tune(.04f);
 }
 
+
+struct GcWrapper
+{
+    GuitarCollector* gcPtr = nullptr;
+    GcWrapper( GuitarCollector* ptrToGuitarCollector ) : gcPtr(ptrToGuitarCollector)
+    {
+        std::cout <<  "GcWrapper being constructed" << std::endl;
+    }
+    ~GcWrapper()
+    {
+        delete gcPtr;
+        std::cout << "GcWrapper being deconstructed (deleted gcPtr)" << std::endl;
+    }
+};
+
 // New UDT 5
 
 struct CoreOfPlane
@@ -495,7 +573,9 @@ struct CoreOfPlane
     void startUp();
     CoreOfPlane();
     ~CoreOfPlane();
-    
+
+    JUCE_LEAK_DETECTOR(CoreOfPlane)
+
 };
 
 CoreOfPlane::CoreOfPlane()
@@ -521,53 +601,65 @@ void CoreOfPlane::startUp()
     fs.supportWingsAndTail();
 }
 
+struct CopWrapper
+{
+    CoreOfPlane* copPtr = nullptr;
+    CopWrapper( CoreOfPlane* ptrToCop ) : copPtr(ptrToCop)
+    {
+       std::cout << "CopWrapper being constructed" << std::endl; 
+    }
+    ~CopWrapper()
+    {
+        delete copPtr;
+        std::cout << "CopWrapper being deconstructed (deleted copPtr)" << std::endl;
+        
+    }
+};
 
 int main()
 {
-    Guitar gib;
-    Guitar::Strings eball;
-    gib.playNote("F");
-    gib.tune(.04f);
-    gib.makePercussiveNoise();
-    gib.increaseVolume(50);
-    gib.displayVolumeLevel();
-    eball.bend("Low E", false);
-    eball.slide("A", "G");
-    eball.snap();
-    eball.displayCurrentPitchST();
+    GuitarWrapper gtrWrapper( new Guitar() );
+    gtrWrapper.gtrPtr->playNote("F");
+    gtrWrapper.gtrPtr->tune(.04f);
+    gtrWrapper.gtrPtr->makePercussiveNoise();
+    gtrWrapper.gtrPtr->increaseVolume(50);
+    gtrWrapper.gtrPtr->displayVolumeLevel();
     
-    std::cout << "Current pitch ST: " << eball.currentPitchST << std::endl;
-    std::cout << "Current volume level is: " << gib.volumeLevel << std::endl;
+    gtrWrapper.gtrPtr->stringsObj.bend("Low E", false);
+    gtrWrapper.gtrPtr->stringsObj.slide("A", "G");
+    gtrWrapper.gtrPtr->stringsObj.snap();
+    gtrWrapper.gtrPtr->stringsObj.displayCurrentPitchST();
+    std::cout << "Current pitch ST: " << gtrWrapper.gtrPtr->stringsObj.currentPitchST << std::endl;
+    std::cout << "Current volume level is: " << gtrWrapper.gtrPtr->volumeLevel << std::endl;
 
-    Engines engines;
-    Engines::Turbines turbines;
-    engines.engageThrust(turbines, true);
-    engines.increasePower(40);
-    engines.controlSpeed();
-    engines.displaySize();
-    turbines.increaseThrustLevel(20);
-    turbines.increaseSpeed(20);
-    turbines.increasePressure(40);
-    turbines.releaseFuel(10);
-    turbines.displayMaterial();
-    std::cout << "Size of engines: " << engines.size << std::endl;
-    std::cout << "The material of the turbines is: " << turbines.material << std::endl;
+    EnginesWrapper egWrapper( new Engines() );
+    egWrapper.egPtr->engageThrust(egWrapper.egPtr->turbines, true);
+    egWrapper.egPtr->increasePower(40);
+    egWrapper.egPtr->controlSpeed();
+    egWrapper.egPtr->displaySize();
+    egWrapper.egPtr->turbines.increaseThrustLevel(20);
+    egWrapper.egPtr->turbines.increaseSpeed(20);
+    egWrapper.egPtr->turbines.increasePressure(40);
+    egWrapper.egPtr->turbines.releaseFuel(10);
+    egWrapper.egPtr->turbines.displayMaterial();
+    std::cout << "Size of engines: " << egWrapper.egPtr->size << std::endl;
+    std::cout << "Fuel released: " << egWrapper.egPtr->turbines.fuelReleased << std::endl;
 
-    Fuselage fuselage;
-    fuselage.encloseCabin();
-    fuselage.supportWingsAndTail();
-    fuselage.maintainInternalPressure();
-    fuselage.receivePassengers(10);
-    fuselage.displayCapacity();
-    std::cout << "The fuselage can hold up to " << fuselage.capacity << " passengers" << std::endl;
+    FuselageWrapper fusWrapper( new Fuselage() );
+    fusWrapper.fusPtr->encloseCabin();
+    fusWrapper.fusPtr->supportWingsAndTail();
+    fusWrapper.fusPtr->maintainInternalPressure();
+    fusWrapper.fusPtr->receivePassengers(10);
+    fusWrapper.fusPtr->displayCapacity();
+    std::cout << "The fuselage can hold up to " << fusWrapper.fusPtr->capacity << " passengers" << std::endl;
 
-    GuitarCollector gc;
-    gc.raiseMultipleVolumes();
-    gc.tuneAll();
+    GcWrapper gcWrapper( new GuitarCollector() );
+    gcWrapper.gcPtr->raiseMultipleVolumes();
+    gcWrapper.gcPtr->tuneAll();
     
-    CoreOfPlane cop;
-    cop.adjustPressures();
-    cop.startUp();
+    CopWrapper copWrapper( new CoreOfPlane() );
+    copWrapper.copPtr->adjustPressures();
+    copWrapper.copPtr->startUp();
      
     std::cout << "good to go!" << std::endl;
 }
