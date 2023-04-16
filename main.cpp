@@ -126,7 +126,6 @@ struct Guitar
     Guitar();
     ~Guitar();
 
-    Strings stringsObj;
     bool playNote(std::string whichNote);
     void tune(float CurrentCent);
     bool makePercussiveNoise();
@@ -297,7 +296,6 @@ struct Engines
     Engines();
     ~Engines();
 
-    Turbines turbines;
 
     bool engageThrust(Turbines& thrust,bool turbinesEngaged);
     void increasePower(int amountOfIncrease);
@@ -619,31 +617,32 @@ struct CopWrapper
 int main()
 {
     GuitarWrapper gtrWrapper( new Guitar() );
+    Guitar::Strings eball;
     gtrWrapper.gtrPtr->playNote("F");
     gtrWrapper.gtrPtr->tune(.04f);
     gtrWrapper.gtrPtr->makePercussiveNoise();
     gtrWrapper.gtrPtr->increaseVolume(50);
     gtrWrapper.gtrPtr->displayVolumeLevel();
-    
-    gtrWrapper.gtrPtr->stringsObj.bend("Low E", false);
-    gtrWrapper.gtrPtr->stringsObj.slide("A", "G");
-    gtrWrapper.gtrPtr->stringsObj.snap();
-    gtrWrapper.gtrPtr->stringsObj.displayCurrentPitchST();
-    std::cout << "Current pitch ST: " << gtrWrapper.gtrPtr->stringsObj.currentPitchST << std::endl;
+    eball.bend("A", false);
+    eball.slide("G", "A");
+    eball.snap();
+    eball.displayCurrentPitchST();
+    std::cout << "Current pitch ST: " << eball.currentPitchST << std::endl;
     std::cout << "Current volume level is: " << gtrWrapper.gtrPtr->volumeLevel << std::endl;
 
     EnginesWrapper egWrapper( new Engines() );
-    egWrapper.egPtr->engageThrust(egWrapper.egPtr->turbines, true);
+    Engines::Turbines tb;
+    egWrapper.egPtr->engageThrust(tb, true);
     egWrapper.egPtr->increasePower(40);
     egWrapper.egPtr->controlSpeed();
     egWrapper.egPtr->displaySize();
-    egWrapper.egPtr->turbines.increaseThrustLevel(20);
-    egWrapper.egPtr->turbines.increaseSpeed(20);
-    egWrapper.egPtr->turbines.increasePressure(40);
-    egWrapper.egPtr->turbines.releaseFuel(10);
-    egWrapper.egPtr->turbines.displayMaterial();
+    tb.increaseThrustLevel(20);
+    tb.increaseSpeed(20);
+    tb.increasePressure(40);
+    tb.releaseFuel(10);
+    tb.displayMaterial();
     std::cout << "Size of engines: " << egWrapper.egPtr->size << std::endl;
-    std::cout << "Fuel released: " << egWrapper.egPtr->turbines.fuelReleased << std::endl;
+    std::cout << "Fuel released: " << tb.fuelReleased << std::endl;
 
     FuselageWrapper fusWrapper( new Fuselage() );
     fusWrapper.fusPtr->encloseCabin();
