@@ -58,17 +58,17 @@ void Guitar::Strings::slide(std::string currentNote, std::string targetNote)
         }
     }
 }
-bool Guitar::Strings::snap()
+bool Guitar::Strings::snap() const
 {
     return true;
 }
 
-void Guitar::Strings::displayCurrentPitchST()
+void Guitar::Strings::displayCurrentPitchST() const
 {
     std::cout << "Current pitch ST: " << this->currentPitchST << std::endl;
 }
 
-bool Guitar::playNote(std::string whichNote)
+bool Guitar::playNote(const std::string whichNote)
 {
     if(whichNote == "F")
     {
@@ -111,7 +111,7 @@ void Guitar::increaseVolume(int targetVolume)
     }
 }
 
-void Guitar::displayVolumeLevel()
+void Guitar::displayVolumeLevel() const
 {
     std::cout << "Current volume level is: " << this->volumeLevel << std::endl;
 }

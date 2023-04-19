@@ -16,7 +16,7 @@ struct Engines
         int highPressureWidth;
         int fuelReleased;
         std::string brand;
-        std::string model";
+        std::string model;
         std::string material;
         int currentSpeed;
         int thrustLevel;
@@ -29,7 +29,7 @@ struct Engines
         void increaseSpeed(int targetSpeed);
         void increasePressure(int targetPressure);
         void releaseFuel(int amount);
-        void displayMaterial();
+        void displayMaterial() const;
     };
 
     Engines();
@@ -39,7 +39,7 @@ struct Engines
     bool engageThrust(Turbines& thrust,bool turbinesEngaged);
     void increasePower(int amountOfIncrease);
     void controlSpeed();
-    void displaySize();
+    void displaySize() const;
 
     JUCE_LEAK_DETECTOR(Engines)
 

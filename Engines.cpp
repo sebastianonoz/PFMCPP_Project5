@@ -5,7 +5,7 @@ Engines::Engines() :
 numEngines(2),
 powerOutput(.30f),
 fuelEfficiency(10.f),
-emission({20.f),
+emissions(20.f),
 size(20),
 engineSpeed(0)
 {
@@ -61,7 +61,7 @@ void Engines::Turbines::increasePressure(int targetPressure)
     }
 }
 
-void Engines::Turbines::displayMaterial()
+void Engines::Turbines::displayMaterial() const
 {
     std::cout << "The material of the turbines is: " << this->material << std::endl;
 }
@@ -103,7 +103,7 @@ void Engines::controlSpeed()
     }
 }
 
-void Engines::displaySize()
+void Engines::displaySize() const
 {
     std::cout << "Size of engines: " << this->size << std::endl;
 }

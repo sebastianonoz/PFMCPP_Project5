@@ -24,18 +24,18 @@ struct Guitar
         
         void bend(std::string whichString, bool bendUp);
         void slide(std::string currentNote, std::string targetNote);
-        bool snap();
-        void displayCurrentPitchST();
+        bool snap() const;
+        void displayCurrentPitchST() const;
     };
 
     Guitar();
     ~Guitar();
 
-    bool playNote(std::string whichNote);
+    bool playNote(const std::string whichNote);
     void tune(float CurrentCent);
     bool makePercussiveNoise();
     void increaseVolume(int targetVolume);   
-    void displayVolumeLevel();
+    void displayVolumeLevel() const;
 
     JUCE_LEAK_DETECTOR(Guitar)
     

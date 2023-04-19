@@ -11,9 +11,9 @@ struct Fuselage
 
     void encloseCabin();
     void supportWingsAndTail();
-    void maintainInternalPressure();
+    void maintainInternalPressure() const;
     void receivePassengers(int passengerCount);
-    void displayCapacity();
+    void displayCapacity() const;
 
     JUCE_LEAK_DETECTOR(Fuselage)
 };

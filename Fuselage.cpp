@@ -5,7 +5,7 @@ Fuselage::Fuselage() :
 length(40),
 width(60),
 capacity(10),
-height(19.f0),
+height(19.f),
 drag(32.2f)
 {
     std::cout << "Fuselage being constructed!" << std::endl;
@@ -24,7 +24,7 @@ void Fuselage::supportWingsAndTail()
 {
     std::cout << "Supporting wings and tail." << std::endl;
 }
-void Fuselage::maintainInternalPressure()
+void Fuselage::maintainInternalPressure() const
 {
     if(capacity >= 50)
     {
@@ -53,7 +53,7 @@ void Fuselage::receivePassengers(int passengerCount)
     }
 }
 
-void Fuselage::displayCapacity()
+void Fuselage::displayCapacity() const
 {
     std::cout << "The fuselage can hold up to " << this->capacity << " passengers" << std::endl;
 }
